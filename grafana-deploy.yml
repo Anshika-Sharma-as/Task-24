@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mygrafana
+  labels:
+    app: mygrafana
+spec:
+  selector:
+    app: mygrafana
+  type: NodePort
+  ports:
+  - port: 3000
+    targetPort: 3000
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mygrafana
+  labels:
+    app: mygrafana
+spec:
+  selector:
+    matchLabels:
+      app: mygrafana
+  replicas: 1
+  template:
+    metadata:
+      name: mygrafana-pod
+      labels:
+        app: mygrafana
+    spec:
+      containers:
+      - name: mygrafana-container
+        image: vimal13/grafana
+        volumeMounts:
+        - name: grafana-storage-volume
+          mountPath: /var/lib/grafana
+      volumes:
+      - name: grafana-storage-volume
+        persistentVolumeClaim:
+          claimName: pvc-grafana

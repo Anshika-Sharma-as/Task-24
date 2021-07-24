@@ -1,0 +1,7 @@
+FROM centos:latest
+RUN yum install wget sudo -y
+RUN wget https://github.com/prometheus/prometheus/releases/download/v2.19.0/prometheus-2.19.0.linux-amd64.tar.gz
+RUN tar -xzf prometheus-2.19.0.linux-amd64.tar.gz
+RUN mkdir /prom_metrics
+CMD ./prometheus-2.19.0.linux-amd64/prometheus --config.file=/prometheus-2.19.0.linux-amd64/prometheus.yml --storage.tsdb.path=/prom_metrics && tail -f /dev/null
+EXPOSE 9090

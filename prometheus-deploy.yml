@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mypromethues
+  labels:
+    app: mypromethues
+spec:
+  selector:
+    app: mypromethues
+  type: NodePort
+  ports:
+  - port: 9090
+    targetPort: 9090
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mypromethues
+  labels:
+    app: mypromethues
+spec:
+  selector:
+    matchLabels:
+      app: mypromethues
+  replicas: 1
+  template:
+    metadata:
+      name: mypod
+      labels:
+        app: mypromethues
+    spec:
+      containers:
+      - name: mygrafana-container
+        image: vimal13/prometheus
+        volumeMounts:
+        - name: prometheus-storage-volume
+          mountPath: /prometheus/
+      volumes:
+      - name: prometheus-storage-volume
+        persistentVolumeClaim:
+          claimName: pvc-prometheus
